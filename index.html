@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exportaciones Kenet - Inventario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Navegación */
+        nav {
+            background-color: #2c3e50;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        nav li {
+            margin: 0 1rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #34495e;
+        }
+
+        /* Secciones de productos */
+        .productos-section {
+            margin: 3rem 0;
+        }
+
+        .productos-section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            font-size: 2rem;
+            position: relative;
+        }
+
+        .productos-section h2::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #e74c3c;
+            margin: 0.5rem auto;
+            border-radius: 2px;
+        }
+
+        /* Grid de productos */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Tarjetas de productos */
+        .producto-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .producto-card h3 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 0.5rem;
+        }
+
+        .ingredientes h4, .preparacion h4 {
+            color: #2c3e50;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .ingredientes ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .ingredientes li {
+            padding: 0.3rem 0;
+            border-bottom: 1px dotted #eee;
+        }
+
+        .ingredientes li:last-child {
+            border-bottom: none;
+        }
+
+        .preparacion p {
+            background-color: #f8f9fa;
+            padding: 0.8rem;
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+        .valor {
+            margin-top: 1rem;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 2px dashed #e74c3c;
+        }
+
+        .valor p {
+            font-size: 1.2rem;
+            color: #27ae60;
+        }
+
+        /* Sección de inventario total */
+        #inventario-total {
+            margin: 3rem 0;
+        }
+
+        .inventario-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .inventario-card h2 {
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .valor-total {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .nota {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Sección de redes sociales */
+        #redes-sociales {
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        #redes-sociales h2 {
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        .redes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .red-social {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .red-social:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .red-social i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .red-social span {
+            font-weight: 500;
+        }
+
+        /* Colores específicos para cada red social */
+        .red-social:nth-child(1) i { color: #1DA1F2; } /* Twitter */
+        .red-social:nth-child(2) i { color: #1877F2; } /* Facebook */
+        .red-social:nth-child(3) i { color: #E4405F; } /* Instagram */
+        .red-social:nth-child(4) i { color: #25D366; } /* WhatsApp */
+        .red-social:nth-child(5) i { color: #0088CC; } /* Telegram */
+        .red-social:nth-child(6) i { color: #FF0000; } /* YouTube */
+        .red-social:nth-child(7) i { color: #EA4335; } /* Gmail */
+        .red-social:nth-child(8) i { color: #00C261; } /* Rappi */
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.3rem 0;
+            }
+            
+            .productos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .redes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Exportaciones Kenet</h1>
+            <p>Inventario de productos</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#perros-calientes">Perros Calientes</a></li>
+                <li><a href="#hamburguesas">Hamburguesas</a></li>
+                <li><a href="#redes-sociales">Redes Sociales</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="perros-calientes" class="productos-section">
+            <h2>Perros Calientes</h2>
+            
+            <div class="productos-grid">
+                <!-- Perro Clásico -->
+                <div class="producto-card">
+                    <h3>Perro Clásico</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan para perro caliente (100g)</li>
+                            <li>Salchicha (80g)</li>
+                            <li>Salsa de tomate (20g)</li>
+                            <li>Mayonesa (15g)</li>
+                            <li>Mostaza (10g)</li>
+                            <li>Papas en trozos (30g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la salchicha, calentar el pan, agregar las salsas y acompañar con papas.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $8.500</strong></p>
+                    </div>
+                </div>
+
+                <!-- Perro Especial -->
+                <div class="producto-card">
+                    <h3>Perro Especial</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan para perro caliente (100g)</li>
+                            <li>Salchicha (80g)</li>
+                            <li>Tocineta (40g)</li>
+                            <li>Queso mozzarella (30g)</li>
+                            <li>Salsa de tomate (20g)</li>
+                            <li>Mayonesa (15g)</li>
+                            <li>Mostaza (10g)</li>
+                            <li>Cebolla caramelizada (25g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la salchicha y tocineta, calentar el pan, agregar queso derretido, salsas y cebolla caramelizada.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $12.500</strong></p>
+                    </div>
+                </div>
+
+                <!-- Perro Hawaiano -->
+                <div class="producto-card">
+                    <h3>Perro Hawaiano</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan para perro caliente (100g)</li>
+                            <li>Salchicha (80g)</li>
+                            <li>Piña en trozos (40g)</li>
+                            <li>Tocineta (30g)</li>
+                            <li>Salsa agridulce (25g)</li>
+                            <li>Mayonesa (15g)</li>
+                            <li>Cebolla morada (20g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la salchicha y tocineta, calentar el pan, agregar piña, salsas y cebolla morada.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $13.000</strong></p>
+                    </div>
+                </div>
+
+                <!-- Perro Mexicano -->
+                <div class="producto-card">
+                    <h3>Perro Mexicano</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan para perro caliente (100g)</li>
+                            <li>Salchicha (80g)</li>
+                            <li>Guacamole (50g)</li>
+                            <li>Pico de gallo (40g)</li>
+                            <li>Jalapeños en rodajas (20g)</li>
+                            <li>Crema agria (25g)</li>
+                            <li>Salsa picante (15g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la salchicha, calentar el pan, agregar guacamole, pico de gallo, jalapeños y salsas.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $14.500</strong></p>
+                    </div>
+                </div>
+
+                <!-- Perro BBQ -->
+                <div class="producto-card">
+                    <h3>Perro BBQ</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan para perro caliente (100g)</li>
+                            <li>Salchicha (80g)</li>
+                            <li>Salsa BBQ (40g)</li>
+                            <li>Cebolla frita (30g)</li>
+                            <li>Tocineta (30g)</li>
+                            <li>Queso cheddar (25g)</li>
+                            <li>Maíz dulce (20g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la salchicha y tocineta, calentar el pan, agregar salsa BBQ, queso derretido, cebolla frita y maíz.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $13.500</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hamburguesas" class="productos-section">
+            <h2>Hamburguesas</h2>
+            
+            <div class="productos-grid">
+                <!-- Hamburguesa Clásica -->
+                <div class="producto-card">
+                    <h3>Hamburguesa Clásica</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan de hamburguesa (100g)</li>
+                            <li>Carne de res (150g)</li>
+                            <li>Lechuga (30g)</li>
+                            <li>Tomate (40g)</li>
+                            <li>Cebolla (25g)</li>
+                            <li>Salsa de tomate (20g)</li>
+                            <li>Mayonesa (15g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la carne, tostar el pan, agregar vegetales frescos y salsas.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $12.000</strong></p>
+                    </div>
+                </div>
+
+                <!-- Hamburguesa Doble Carne -->
+                <div class="producto-card">
+                    <h3>Hamburguesa Doble Carne</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan de hamburguesa (100g)</li>
+                            <li>Doble carne de res (300g)</li>
+                            <li>Queso americano (40g)</li>
+                            <li>Lechuga (30g)</li>
+                            <li>Tomate (40g)</li>
+                            <li>Cebolla (25g)</li>
+                            <li>Salsa especial (30g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar las dos carnes, agregar queso derretido, tostar el pan y añadir vegetales y salsa especial.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $18.500</strong></p>
+                    </div>
+                </div>
+
+                <!-- Hamburguesa Vegetariana -->
+                <div class="producto-card">
+                    <h3>Hamburguesa Vegetariana</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan de hamburguesa integral (100g)</li>
+                            <li>Medallón de garbanzos y vegetales (150g)</li>
+                            <li>Lechuga (30g)</li>
+                            <li>Tomate (40g)</li>
+                            <li>Cebolla morada (25g)</li>
+                            <li>Aguacate (50g)</li>
+                            <li>Salsa de yogur (30g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar el medallón vegetariano, tostar el pan integral, agregar vegetales frescos, aguacate y salsa de yogur.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $14.000</strong></p>
+                    </div>
+                </div>
+
+                <!-- Hamburguesa Gourmet -->
+                <div class="producto-card">
+                    <h3>Hamburguesa Gourmet</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan brioche (100g)</li>
+                            <li>Carne angus (180g)</li>
+                            <li>Queso brie (50g)</li>
+                            <li>Tocineta (40g)</li>
+                            <li>Cebolla caramelizada (40g)</li>
+                            <li>Rúcula (25g)</li>
+                            <li>Salsa trufada (25g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la carne premium, derretir el queso brie, tostar el pan brioche y agregar los ingredientes gourmet.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $22.000</strong></p>
+                    </div>
+                </div>
+
+                <!-- Hamburguesa Picante -->
+                <div class="producto-card">
+                    <h3>Hamburguesa Picante</h3>
+                    <div class="ingredientes">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            <li>Pan de hamburguesa (100g)</li>
+                            <li>Carne de res con especias (150g)</li>
+                            <li>Queso pepper jack (40g)</li>
+                            <li>Jalapeños en rodajas (30g)</li>
+                            <li>Cebolla morada (25g)</li>
+                            <li>Lechuga (30g)</li>
+                            <li>Salsa picante especial (30g)</li>
+                        </ul>
+                    </div>
+                    <div class="preparacion">
+                        <h4>Preparación:</h4>
+                        <p>Cocinar la carne sazonada, agregar queso pepper jack derretido, tostar el pan y añadir jalapeños y salsa picante.</p>
+                    </div>
+                    <div class="valor">
+                        <p><strong>Valor unitario: $16.500</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="inventario-total">
+            <div class="inventario-card">
+                <h2>Valor Total del Inventario</h2>
+                <p class="valor-total">$1.250.000</p>
+                <p class="nota">* Valor estimado en pesos colombianos</p>
+            </div>
+        </section>
+
+        <section id="redes-sociales">
+            <h2>Síguenos en nuestras redes sociales</h2>
+            <div class="redes-grid">
+                <a href="https://twitter.com" target="_blank" class="red-social">
+                    <i class="fab fa-twitter"></i>
+                    <span>X (Twitter)</span>
+                </a>
+                <a href="https://facebook.com" target="_blank" class="red-social">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </a>
+                <a href="https://instagram.com" target="_blank" class="red-social">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+                <a href="https://wa.me/573001234567" target="_blank" class="red-social">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </a>
+                <a href="https://t.me/exportacioneskenet" target="_blank" class="red-social">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram</span>
+                </a>
+                <a href="https://youtube.com" target="_blank" class="red-social">
+                    <i class="fab fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+                <a href="mailto:exportacioneskenet@gmail.com" target="_blank" class="red-social">
+                    <i class="far fa-envelope"></i>
+                    <span>Gmail</span>
+                </a>
+                <a href="https://rappi.com" target="_blank" class="red-social">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Rappi</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Exportaciones Kenet - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>
